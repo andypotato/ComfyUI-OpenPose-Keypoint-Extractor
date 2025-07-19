@@ -78,6 +78,54 @@ class OpenPoseKeyPointExtractor:
                 
         return (final_x, final_y, final_width, final_height)
 
+class CanvasPositioner:
+    @classmethod
+    def INPUT_TYPES(s):
+        # The list of anchor points for the dropdown menu
+        anchor_points = [
+            "center", "top-center", "bottom-center", "left-center", "right-center",
+            "top-left", "top-right", "bottom-left", "bottom-right"
+        ]
+        return {
+            "required": {
+                "content_width": ("INT", {"default": 512, "min": 1, "max": MAX_RESOLUTION, "step": 1}),
+                "content_height": ("INT", {"default": 512, "min": 1, "max": MAX_RESOLUTION, "step": 1}),
+                "target_canvas_width": ("INT", {"default": 1024, "min": 1, "max": MAX_RESOLUTION, "step": 8}),
+                "target_canvas_height": ("INT", {"default": 1024, "min": 1, "max": MAX_RESOLUTION, "step": 8}),
+                "anchor_point": (anchor_points,),
+                "offset_x": ("INT", {"default": 0, "min": -MAX_RESOLUTION, "max": MAX_RESOLUTION, "step": 1}),
+                "offset_y": ("INT", {"default": 0, "min": -MAX_RESOLUTION, "max": MAX_RESOLUTION, "step": 1}),
+            }
+        }
+
+    RETURN_TYPES = ("INT", "INT")
+    RETURN_NAMES = ("pos_x", "pos_y")
+    FUNCTION = "calculate_position"
+    CATEGORY = "utils" # You can place it in the same category or a new one
+
+    def calculate_position(self, content_width, content_height, target_canvas_width, target_canvas_height, anchor_point, offset_x, offset_y):
+        # Horizontal alignment
+        if "left" in anchor_point:
+            base_x = 0
+        elif "right" in anchor_point:
+            base_x = target_canvas_width - content_width
+        else: # center
+            base_x = (target_canvas_width - content_width) // 2
+            
+        # Vertical alignment
+        if "top" in anchor_point:
+            base_y = 0
+        elif "bottom" in anchor_point:
+            base_y = target_canvas_height - content_height
+        else: # center
+            base_y = (target_canvas_height - content_height) // 2
+
+        pos_x = base_x + offset_x
+        pos_y = base_y + offset_y
+
+        return (pos_x, pos_y)
+
 NODE_CLASS_MAPPINGS = {
     "Openpose Keypoint Extractor": OpenPoseKeyPointExtractor,
+    "Canvas Positioner": CanvasPositioner,
 }
