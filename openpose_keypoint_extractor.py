@@ -9,11 +9,11 @@ class OpenPoseKeyPointExtractor:
                 "image_width": ("INT", { "min": 0, "max": MAX_RESOLUTION }),
                 "image_height": ("INT", { "min": 0, "max": MAX_RESOLUTION }),
                 "points_list": ("STRING", {"multiline": True, "default": ""}),
-                "min_confidence": ("FLOAT", {"default": 0.5, "min": 0.0, "max": 1.0, "step": 0.01}),
-                "keypoint_padding": ("INT", {"default": 0, "min": 0, "max": MAX_RESOLUTION, "step": 1}),
             },
             "optional": {
                 "person_number": ("INT", { "default": 0 }),
+                "min_confidence": ("FLOAT", {"default": 0.5, "min": 0.0, "max": 1.0, "step": 0.01}),
+                "keypoint_padding": ("INT", {"default": 0, "min": 0, "max": MAX_RESOLUTION, "step": 1}),
             }
         }
 
